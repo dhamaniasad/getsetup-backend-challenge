@@ -15,7 +15,8 @@
     "prod-run": "node dist",
     "watch-run": "nodemon dist",
     "start": "concurrently \"npm run watch-build\" \"npm run watch-run\"",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

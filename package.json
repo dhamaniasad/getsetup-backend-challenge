@@ -7,13 +7,17 @@
     "node": ">=14.17.1"
   },
   "dependencies": {
-    "express": "^4.17.2"
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "express-validator": "^6.14.0",
+    "http-status-codes": "^2.2.0",
+    "mongoose": "^6.1.4"
   },
   "scripts": {
-    "build": "tsc --project ./",
-    "watch-build": "tsc --project ./ -w",
-    "prod-run": "node dist",
-    "watch-run": "nodemon dist",
+    "build": "tsc",
+    "watch-build": "tsc -w",
+    "prod-run": "node dist/src/index.js",
+    "watch-run": "nodemon dist/src/index.js",
     "start": "concurrently \"npm run watch-build\" \"npm run watch-run\"",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix"

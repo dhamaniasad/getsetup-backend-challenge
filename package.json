@@ -8,11 +8,16 @@
   },
   "scripts": {
     "build": "tsc --project ./",
-    "run": "node dist"
+    "watch-build": "tsc --project ./ -w",
+    "prod-run": "node dist",
+    "watch-run": "nodemon dist",
+    "start": "concurrently \"npm run watch-build\" \"npm run watch-run\""
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.5",
+    "concurrently": "^6.5.1",
+    "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   }

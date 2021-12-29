@@ -1,0 +1,22 @@
+PUT http://localhost:3000/api/availability/user/61cc72105c5535194af5d888
+Content-Type: application/json
+
+{
+  "year": 2021,
+  "week": 1,
+  "availability": [
+    [],
+    ["10:00", "13:00", "15:00", "18:00", "08:00", "09:00"],
+    [],
+    [],
+    [],
+    ["08:00", "09:00", "10:00", "13:00", "15:00", "18:00"],
+    []
+  ]
+}
+
+###
+GET http://localhost:3000/api/availability/user/61cc72105c5535194af5d888
+Accept: application/json
+
+###

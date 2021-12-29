@@ -1,10 +1,18 @@
-# Register User API
+### Register User API
 POST http://localhost:3000/api/user/register
 Content-Type: application/json
 
 {
-  "email": "dhamaniasad2@gmail.com",
+  "email": "dhamaniasad4@gmail.com",
   "password": "password"
 }
 
-###
+### Login User API
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "dhamaniasad4@gmail.com",
+  "password": "password"
+}
+

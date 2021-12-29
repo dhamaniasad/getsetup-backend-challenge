@@ -5,6 +5,8 @@ import {
 import { StatusCodes } from 'http-status-codes';
 import { Error } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET, JWT_EXPIRATION } from '../../config';
 import User, { IUser } from '../models/User';
 
 const router: Router = Router();
@@ -83,7 +85,7 @@ router.post(
   '/login',
   checkSchema(UserRegistrationValidationSchema),
   async (req: Request, res: Response) => {
-    const response: { status: number, message: string, data: null | IUser } = { status: 0, message: '', data: null };
+    const response: { status: number, message: string, data?: null | string } = { status: 0, message: '', data: null };
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -95,6 +97,7 @@ router.post(
     if (!existingUser) {
       response.status = -1;
       response.message = 'User with specified email address does not exist';
+      res.json(response);
     } else {
       const isMatch = await bcrypt.compare(password, existingUser.password);
 
@@ -104,10 +107,21 @@ router.post(
         return res.status(StatusCodes.BAD_REQUEST).json(response);
       }
       response.message = 'Logged in successfully!';
-      response.data = existingUser;
-      res.json(response);
+      const payload = {
+        userId: existingUser.id,
+      };
+
+      jwt.sign(
+        payload,
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRATION },
+        (err, token) => {
+          if (err) throw err;
+          response.data = token;
+          res.json(response);
+        },
+      );
     }
-    res.json(response);
   },
 );
 

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "engines": {
+    "node": ">=14.17.1"
+  },
   "dependencies": {
     "express": "^4.17.2"
   },
@@ -11,12 +14,19 @@
     "watch-build": "tsc --project ./ -w",
     "prod-run": "node dist",
     "watch-run": "nodemon dist",
-    "start": "concurrently \"npm run watch-build\" \"npm run watch-run\""
+    "start": "concurrently \"npm run watch-build\" \"npm run watch-run\"",
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.8.1",
+    "@typescript-eslint/parser": "^5.8.1",
     "concurrently": "^6.5.1",
+    "eslint": "^8.5.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"

@@ -37,6 +37,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
     "jest": "^27.4.5",
+    "mockdate": "^3.0.5",
     "nodemon": "^2.0.15",
     "supertest": "^6.1.6",
     "ts-node": "^10.4.0",

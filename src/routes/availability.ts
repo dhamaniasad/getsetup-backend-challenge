@@ -33,7 +33,7 @@ router.put('/user/:userId',
        return true
     }),
     async (req: Request, res: Response) => {
-        const response: { status: number, message: string, data: null | IAvailability, errors: any[] | undefined } = {
+        const response: { status: number, message: string, data: null | any, errors: any[] | undefined } = {
             status: 0,
             message: '',
             data: null,
@@ -57,6 +57,7 @@ router.put('/user/:userId',
 
         const currentTimeHours = new Date().getHours();
 
+        // Limit submissions to be between 7AM and 10PM
         if (currentTimeHours >= 7 && currentTimeHours <= 22) {
             let availabilityData = await Availability.findOne({userId, week, year});
 

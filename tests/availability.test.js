@@ -10,7 +10,7 @@ afterEach(async () => await db.clearDatabase());
 afterAll(async () => await db.closeDatabase());
 
 describe("GET /api/availability/user/<userId>", () => {
-    it("Returns correct availability for user", async () => {
+    it("Returns correct availability for user with single week of data", async () => {
         const user = await User.create({
             email: "test@example.com",
             password: "password"
@@ -27,6 +27,43 @@ describe("GET /api/availability/user/<userId>", () => {
             .then(response => {
                 expect(response.body.status).toEqual(0);
                 expect(response.body.data.length).toBe(1);
+                expect(response.body.data[0].availability.length).toBe(7);
+                expect(response.body.data[0].availability).toEqual([
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    []
+                ]);
+            })
+    });
+
+    it("Returns correct availability for user with multiple weeks of data", async () => {
+        const user = await User.create({
+            email: "test@example.com",
+            password: "password"
+        })
+        const availability = await Availability.create({
+            year: 2022,
+            week: 1,
+            userId: user._id,
+            availability: [[], [], [], [], [], [], []]
+        });
+
+        const availabilityTwo = await Availability.create({
+            year: 2022,
+            week: 2,
+            userId: user._id,
+            availability: [[], [], [], [], [], [], []]
+        });
+
+        await supertest(app).get(`/api/availability/user/${user._id}`)
+            .expect(200)
+            .then(response => {
+                expect(response.body.status).toEqual(0);
+                expect(response.body.data.length).toBe(2);
                 expect(response.body.data[0].availability.length).toBe(7);
                 expect(response.body.data[0].availability).toEqual([
                     [],

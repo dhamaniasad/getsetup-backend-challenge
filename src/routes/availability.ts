@@ -6,12 +6,13 @@ const router: Router = Router();
 
 router.get('/user/:userId', async (req: Request, res: Response) => {
   const { userId } = req.params;
+  const response: { status: number, message: string, data: null | any } = { status: 0, message: '', data: null };
 
   const availabilityData = await Availability.find({ userId }).sort({ week: 'asc' }).exec();
 
   console.log(availabilityData);
-  const responseData = availabilityData.map(av => ({ week: av.week, year: av.year, availability: av.availability }))
-  res.json(responseData);
+  response.data = availabilityData.map(av => ({ week: av.week, year: av.year, availability: av.availability }))
+  res.json(response);
 });
 
 router.put('/user/:userId', async (req: Request, res: Response) => {

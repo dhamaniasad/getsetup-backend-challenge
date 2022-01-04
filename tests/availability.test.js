@@ -6,6 +6,7 @@ const Availability = require("../dist/src/models/Availability").default;
 const User = require("../dist/src/models/User").default;
 
 beforeAll(async () => await db.connect());
+afterEach(async () => await db.clearDatabase());
 afterAll(async () => await db.closeDatabase());
 
 // beforeEach((done) => {
@@ -36,6 +37,17 @@ test("GET /api/availability/user/<userId>", async () => {
        .then(response => {
           console.log(response.body);
           expect(response.body.status).toEqual(0);
+          expect(response.body.data.length).toBe(1);
+          expect(response.body.data[0].availability.length).toBe(7);
+          expect(response.body.data[0].availability).toEqual([
+              [],
+              [],
+              [],
+              [],
+              [],
+              [],
+              []
+          ]);
        })
 });
 

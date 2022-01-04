@@ -16,7 +16,7 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-  }
+  },
 });
 
 const User = model<IUser>('User', userSchema);

@@ -1,52 +1,73 @@
-import { Request, Response, Router } from 'express';
+import {Request, Response, Router} from 'express';
 import User, {IUser} from "../models/User";
 import Availability, {IAvailability} from "../models/Availability";
+import {checkSchema, Schema, check, validationResult} from "express-validator";
+import {StatusCodes} from "http-status-codes";
 
 const router: Router = Router();
 
 router.get('/user/:userId', async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  const response: { status: number, message: string, data: null | any } = { status: 0, message: '', data: null };
+    const {userId} = req.params;
+    const response: { status: number, message: string, data: null | any } = {status: 0, message: '', data: null};
 
-  const availabilityData = await Availability.find({ userId }).sort({ week: 'asc' }).exec();
+    const availabilityData = await Availability.find({userId}).sort({week: 'asc'}).exec();
 
-  console.log(availabilityData);
-  response.data = availabilityData.map(av => ({ week: av.week, year: av.year, availability: av.availability }))
-  res.json(response);
-});
-
-router.put('/user/:userId', async (req: Request, res: Response) => {
-  const { week, availability, year } = req.body;
-  const { userId } = req.params;
-  const user = await User.findOne({ _id: userId });
-  const response: { status: number, message: string, data: null | IAvailability } = { status: 0, message: '', data: null };
-
-  const currentTimeHours = new Date().getHours();
-
-  if (currentTimeHours >= 7 && currentTimeHours <= 22) {
-    let availabilityData = await Availability.findOne({ userId, week, year });
-
-    if (availabilityData) {
-      availabilityData.availability = availability;
-      await availabilityData.save();
-    } else {
-      availabilityData = await Availability.create({
-        userId,
-        week,
-        year,
-        availability
-      })
-    }
-
-    response.data = availabilityData;
-
+    console.log(availabilityData);
+    response.data = availabilityData.map(av => ({week: av.week, year: av.year, availability: av.availability}))
     res.json(response);
-  } else {
-    response.status = -1;
-    response.message = "Availability can only be submitted between 7AM to 10PM. Please try again later."
-    res.json(response )
-  }
-
 });
+
+router.put('/user/:userId',
+    check('week').isInt({min: 1, max: 52}).withMessage("Week should be between 1 and 52"),
+    check('availability').custom((value) => {
+       if (value.length !== 7) {
+           throw new Error("availability field should be an array of length 7 (for 7 days).")
+       }
+       return true
+    }),
+    async (req: Request, res: Response) => {
+        const response: { status: number, message: string, data: null | IAvailability, errors: any[] | undefined } = {
+            status: 0,
+            message: '',
+            data: null,
+            errors: []
+        };
+
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            response.errors = errors.array();
+            return res.status(StatusCodes.BAD_REQUEST).json(response);
+        }
+        const {week, availability, year} = req.body;
+        const {userId} = req.params;
+        const user = await User.findOne({_id: userId});
+
+        const currentTimeHours = new Date().getHours();
+
+        if (currentTimeHours >= 7 && currentTimeHours <= 22) {
+            let availabilityData = await Availability.findOne({userId, week, year});
+
+            if (availabilityData) {
+                availabilityData.availability = availability;
+                await availabilityData.save();
+            } else {
+                availabilityData = await Availability.create({
+                    userId,
+                    week,
+                    year,
+                    availability
+                })
+            }
+
+            response.data = availabilityData;
+
+            res.json(response);
+        } else {
+            response.status = -1;
+            response.message = "Availability can only be submitted between 7AM to 10PM. Please try again later."
+            res.json(response)
+        }
+
+    });
 
 export default router;

@@ -19,7 +19,7 @@
     "build": "tsc",
     "watch-build": "tsc -w",
     "prod-run": "node dist/src/server.js",
-    "watch-run": "export NODE_ENV=development nodemon --delay 500ms dist/src/server.js",
+    "watch-run": "nodemon --delay 500ms dist/src/server.js",
     "start": "concurrently \"npm run watch-build\" \"npm run watch-run\"",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix",
